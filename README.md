@@ -1,113 +1,128 @@
-# 🎓 빅데이터 입문 Term 프로젝트
+# 🎓 Introduction to Big Data - Term Project
 
-**주제**: 이산화탄소에 따른 계절 길이 변화 예측
+**Topic**: Predicting Seasonal Length Changes Based on CO₂ Concentration
 
+---
 
-## 1. 프로젝트 개요
+## 1. Project Overview
 
-본 프로젝트는 이산화탄소 농도와 대한민국의 계절 길이 변화 간의 관계를 분석하고, 이를 바탕으로 미래 계절 길이를 예측합니다. 실험은 다음 단계를 통해 진행되었습니다:
+This project analyzes the relationship between CO₂ concentration and seasonal length changes in South Korea and uses that relationship to predict future seasonal lengths. The experiment was conducted in the following steps:
 
-1. **CO2 배출량 예측**:  
-   𝑪𝑶𝟐\_𝒆𝒎𝒊𝒔𝒔𝒊𝒐𝒏𝒔(2024\~2050) = 𝐿𝑖𝑛𝑒𝑎𝑟𝑅𝑒𝑔𝑟𝑒𝑠𝑠𝑖𝑜𝑛(𝐶𝑂2\_𝑒𝑚𝑖𝑠𝑠𝑖𝑜𝑛𝑠(1959\~2023))
+1. **CO₂ Emissions Forecasting**  
+   `CO₂_emissions(2024–2050) = LinearRegression(CO₂_emissions(1959–2023))`
 
-2. **CO2 농도 예측**:  
-   𝑪𝑶𝟐\_𝒑𝒑𝒎(2024\~2050) = 𝑆𝐴𝑅𝐼𝑀𝐴𝑋(𝑪𝑶𝟐\_𝒆𝒎𝒊𝒔𝒔𝒊𝒐𝒏𝒔(2024\~2050))
+2. **CO₂ Concentration Forecasting**  
+   `CO₂_ppm(2024–2050) = SARIMAX(CO₂_emissions(2024–2050))`
 
-3. **미래 계절 길이 예측**:  
-   𝑺𝒆𝒂𝒔𝒐𝒏(2024\~2050) = 𝑆𝐴𝑅𝐼𝑀𝐴𝑋(𝑪𝑶𝟐\_𝒑𝒑𝒎(2024\~2050))
+3. **Future Seasonal Length Prediction**  
+   `Season(2024–2050) = SARIMAX(CO₂_ppm(2024–2050))`
 
+---
 
-## 2. 사계절 길이 데이터 제작
+## 2. Seasonal Length Data Construction
 
-- 기상학적 계절 길이를 정의하여 데이터 제작:
-  - **여름**: 일평균 기온의 9일 이동 평균이 20°C 이상으로 상승한 후 다시 떨어지지 않는 첫 날
-  - 동일한 방식으로 **봄**은 5°C 이상, **가을**은 20°C 미만, **겨울**은 5°C 미만을 기준으로 첫 날 정의
+- Seasonal lengths were defined based on meteorological criteria:
+  - **Summer**: The first day when the 9-day moving average of daily temperature exceeds 20°C and does not drop below again
+  - Similarly:
+    - **Spring**: Exceeds 5°C
+    - **Autumn**: Drops below 20°C
+    - **Winter**: Drops below 5°C
 
-![계절 길이 정의](./img/season.png)
+![Definition of Seasons](./img/season.png)
 
+---
 
-## 3. 이산화탄소 농도와 계절 길이의 상관관계
+## 3. Correlation Between CO₂ and Seasonal Length
 
-- **봄, 여름**: CO<sub>2</sub> 농도와 양의 상관관계
-- **가을, 겨울**: CO<sub>2</sub> 농도와 음의 상관관계
+- **Spring & Summer**: Positive correlation with CO₂ concentration  
+- **Autumn & Winter**: Negative correlation with CO₂ concentration
 
-![상관관계](./img/corr_season_co2.png)
+![Correlation](./img/corr_season_co2.png)
 
+---
 
-## 4. 미래 계절 길이 예측
+## 4. Future Seasonal Length Prediction
 
-1. **SARIMA 모델**을 통해 2024~2050년의 이산화탄소 농도를 예측  
-   ![CO2 농도 예측](./img/co2_pred.png)
+1. **CO₂ concentration prediction (2024–2050)** using the SARIMA model  
+   ![CO2 Forecast](./img/co2_pred.png)
 
-2. **예측된 CO2 농도**를 SARIMAX 모델의 외생변수로 사용하여 계절 길이 예측  
-   ![미래 계절 길이](./img/season_pred.png)
+2. **Seasonal length prediction** using the predicted CO₂ as an exogenous variable in the SARIMAX model  
+   ![Season Prediction](./img/season_pred.png)
 
-## 5. 탄소중립 시나리오 생성
+---
 
-- 23개국의 탄소 배출량 데이터를 기반으로 탄소중립 시나리오 작성:
-  1. **탄소중립 달성**: 2050년 배출량을 0으로 설정하고 선형 보간 수행
-  2. **탄소중립 미달성**: Linear Regression으로 탄소 배출량 예측
+## 5. Carbon Neutrality Scenario Modeling
 
-### Scenario #1: 탄소중립 달성 (16개국)
+Based on CO₂ emissions data from 23 countries, we created three scenarios:
 
-![Scenario #1](./img/scenario_1.png)
+1. **Carbon Neutral Achieved**: CO₂ emissions reach 0 by 2050 (linear interpolation)
+2. **Carbon Neutral Not Achieved**: Emissions predicted using linear regression
 
-### Scenario #2: 탄소중립 미달성
+### Scenario 1: Carbon Neutral Achieved (16 Countries)  
+![Scenario 1](./img/scenario_1.png)
 
-![Scenario #2](./img/scenario_2.png)
+### Scenario 2: Carbon Neutral Not Achieved  
+![Scenario 2](./img/scenario_2.png)
 
-### Scenario #3: 전세계 탄소중립 달성
+### Scenario 3: Global Carbon Neutrality Achieved  
+![Scenario 3](./img/scenario_3.png)
 
-![Scenario #3](./img/scenario_3.png)
+---
 
+## 6. CO₂ Forecast by Scenario
 
-## 6. 탄소중립 시나리오 별 CO2 농도 예측
+Predicted CO₂ concentration for each scenario:  
+![Scenario CO2 Forecast](./img/scenario_co2_ppm.png)
 
-- 각 시나리오에 따른 CO2 농도 예측 결과:  
-  ![시나리오 별 CO2 농도](./img/scenario_co2_ppm.png)
+---
 
+## 7. Seasonal Length Prediction by Scenario
 
-## 7. 시나리오 별 계절 길이 예측
+### 7.1 Scenario 1: Carbon Neutral Achieved (16 Countries)  
+![Season Scenario 1](./img/scenario_season_1.png)
 
-### 7-1. Scenario #1: 탄소중립 달성 (16개국)
+### 7.2 Scenario 2: Carbon Neutral Not Achieved  
+![Season Scenario 2](./img/scenario_season_2.png)
 
-![Scenario #1 계절 길이](./img/scenario_season_1.png)
+### 7.3 Scenario 3: Global Carbon Neutrality Achieved  
+![Season Scenario 3](./img/scenario_season_3.png)
 
-### 7-2. Scenario #2: 탄소중립 미달성
+---
 
-![Scenario #2 계절 길이](./img/scenario_season_2.png)
+## 8. Results & Insights
 
-### 7-3. Scenario #3: 전세계 탄소중립 달성
+- **Carbon neutrality** tends to lead to a **recovery of seasonal balance**
+- In **Scenario 3**, spring and summer lengths significantly decrease, while autumn shows recovery
 
-![Scenario #3 계절 길이](./img/scenario_season_3.png)
+---
 
+## 9. Conclusion
 
-## 8. 결과 분석
+- **Global warming** is a **shared challenge** requiring worldwide collaboration
+- Without the participation of major CO₂ emitters, carbon neutrality policies will have limited effectiveness
+- Broader global cooperation can lead to seasonal recovery and real progress in combating climate change
 
-- **탄소중립 달성 시** 계절 길이가 회복되는 경향이 관찰됨
-- **Scenario #3** (전세계 탄소중립 달성)에서는 봄과 여름 길이가 크게 감소하며 가을 길이 회복됨
+---
 
+## 10. Data Sources
 
-## 9. 결론
+- **Daily average temperature in South Korea**  
+  https://data.kma.go.kr/data/grnd/selectAsosRltmList.do?pgmNo=36&tabNo=1
 
-- **지구 온난화** 해결은 전 세계가 함께해야 하는 **공동 과제**
-- 탄소 배출량이 많은 국가들의 참여 없이는 탄소중립 정책의 실효성을 기대하기 어려움
-- 더 많은 국가가 탄소중립에 참여한다면 계절 길이 회복 및 지구 온난화 해결이 가능할 것으로 전망
+- **CO₂ concentration**  
+  https://www.kaggle.com/datasets/jarredpriester/noaa-monthly-co2-ppm
 
+- **CO₂ emissions**  
+  https://ourworldindata.org/co2-and-greenhouse-gas-emissions
 
-## 10. 데이터셋 출처
+---
 
-- 대한민국 일평균 기온 데이터: https://data.kma.go.kr/data/grnd/selectAsosRltmList.do?pgmNo=36&tabNo=1
-- 이산화탄소 농도: https://www.kaggle.com/datasets/jarredpriester/noaa-monthly-co2-ppm
-- 이산화탄소 배출량: https://ourworldindata.org/co2-and-greenhouse-gas-emissions
+## 11. Feedback Welcome
 
+This project focuses on understanding the relationship between CO₂ and seasonal length, and predicting future seasonal changes.  
+We warmly welcome any **feedback or suggestions** to improve the analysis and presentation of our results.
 
-## 11. 피드백 환영
+- Please feel free to share your thoughts or questions.
+- We're open to discussion and continuous improvement.
 
-본 프로젝트는 CO2와 계절 길이 간의 관계 및 미래 변화 예측을 중심으로 진행되었습니다.  
-더 나은 분석과 설득력 있는 결과를 위해 **피드백**을 적극적으로 환영합니다.
-
-- 궁금한 점이나 제안 사항은 언제든지 알려주세요.
-- 프로젝트에 대한 논의와 개선 아이디어는 수용할 준비가 되어 있습니다.
-
-여러분의 소중한 의견이 프로젝트의 발전에 큰 도움이 됩니다!
+Your valuable insights will greatly contribute to the advancement of this project!
